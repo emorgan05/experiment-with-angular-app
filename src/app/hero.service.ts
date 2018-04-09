@@ -15,6 +15,10 @@ const httpOptions = {
 export class HeroService {
   private heroesUrl = 'api/heroes';
 
+  const httpOptions = {
+    headers: new HttpHeaders({ 'Content-Type': 'application/json'})
+  }
+  
   constructor(
     private http: HttpClient,
     private messageService: MessageService
@@ -50,6 +54,14 @@ export class HeroService {
       );
   }
 
+  updateHero(hero: Hero): Observable<any> {
+    return this.http.put(this.heroesUrl, hero, httpOptions)
+      .pipe(
+        tap(_ => this.log(`Updated hero id=${id}`)),
+        catchError(this.handleError<any>('updateHero'))
+      );
+  }
+
   private handleError<T> (operation = 'operation', result?: T) {
     return (error: any): Observable<T> => {
       console.error(error);
@@ -60,5 +72,5 @@ export class HeroService {
 
   private log(message: string) {
     this.messageService.add('HeroService: ' + message);
-  }  
+  }
 }
